@@ -2,21 +2,456 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
-    <script>
+    <script defer>
         MathJax = {
             tex: {
                 inlineMath: [['$', '$']],
                 displayMath: [['$$', '$$']]
             },
             svg: {
-                fontCache: 'global' // 使用 SVG 渲染提升性能
+                fontCache: 'global'
             }
         };
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
+    <style>
+        /* 整个版面style */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: grid;
+            grid-template-columns: 200px 1fr 250px;
+            min-height: 100vh;
+        }
+
+        /* 左侧导航栏样式 */
+        .nav-left {
+            background: #333;
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-left ul {
+            list-style: none;
+            width: 100%;
+        }
+
+        .nav-left li {
+            padding: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .nav-left li:hover {
+            background: #444;
+        }
+
+        /* 内容区域样式 */
+        .content {
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 右侧目录样式 */
+        .toc {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin: 20px 20px 0 0;
+        }
+
+        .toc h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #ddd;
+        }
+
+        .toc a {
+            text-decoration: none;
+            color: #666;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: #333;
+        }
+
+        /* 高亮当前浏览的章节 */
+        .toc li.active {
+            background-color: #e0e0e0;
+        }
+
+        .toc li.active > a {
+            color: #000;
+            font-weight: bold;
+        }
+
+        .toc li.active {
+            border-left-color: #666;
+        }
+    </style>
+    <style>
+        /* 文章内容的style */
+        <style>
+            /* 文章内容样式 */
+        .content {
+            line-height: 1.6;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .content h1 {
+            font-size: 2.2em;
+            margin: 1.5em 0 0.8em;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #eaecef;
+            font-weight: 600;
+        }
+
+        .content h2 {
+            font-size: 1.8em;
+            margin: 1.3em 0 0.7em;
+            padding-bottom: 0.2em;
+            border-bottom: 1px solid #eaecef;
+            font-weight: 600;
+        }
+
+        .content h3 {
+            font-size: 1.5em;
+            margin: 1.2em 0 0.6em;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            font-size: 1.3em;
+            margin: 1em 0 0.5em;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin: 0.8em 0;
+        }
+
+        .content a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        .content a:hover {
+            text-decoration: underline;
+        }
+
+        .content ul, .content ol {
+            margin: 0.8em 0;
+            padding-left: 2em;
+        }
+
+        .content li {
+            margin: 0.4em 0;
+        }
+
+        .content blockquote {
+            margin: 1em 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 0.25em solid #dfe2e5;
+        }
+
+        /* 代码样式 */
+        .content pre {
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            padding: 16px;
+            overflow: auto;
+            margin: 1em 0;
+            line-height: 1.45;
+        }
+
+        .content code {
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            background-color: rgba(27, 31, 35, 0.05);
+            border-radius: 3px;
+            padding: 0.2em 0.4em;
+            font-size: 85%;
+        }
+
+        .content pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* 表格样式 */
+        .content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+            display: block;
+            overflow: auto;
+        }
+
+        .content table th {
+            font-weight: 600;
+            background-color: #f6f8fa;
+        }
+
+        .content table th,
+        .content table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        .content table tr {
+            background-color: #fff;
+            border-top: 1px solid #c6cbd1;
+        }
+
+        .content table tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+
+        /* 图片样式 */
+        .content img {
+            max-width: 100%;
+            display: block;
+            margin: 1.5em auto;
+            box-sizing: content-box;
+            background-color: #fff;
+        }
+
+        /* 数学公式样式 */
+        .content .math {
+            color: #333;
+        }
+
+        /* 特殊文本样式 */
+        .content .highlight {
+            background-color: #fff8c5;
+            padding: 0.2em;
+            border-radius: 3px;
+        }
+
+        /* 分隔线 */
+        .content hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 1.5em 0;
+            background-color: #e1e4e8;
+            border: 0;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .content {
+                font-size: 15px;
+                padding: 20px;
+            }
+
+            .content h1 {
+                font-size: 1.8em;
+            }
+
+            .content h2 {
+                font-size: 1.5em;
+            }
+
+            .content h3 {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+    </style>
 </head>
 <body>
-    <ContentRoot/>
+<nav class="nav-left">
+    <div class="avatar">
+        <img src="path/to/your/avatar.jpg" alt="Avatar">
+    </div>
+    <ul>
+        <li>HOME</li>
+        <li>ABOUT</li>
+        <li>CONTACT</li>
+    </ul>
+</nav>
+
+<main class="content">
+    <!-- 文章标题 -->
+    <PostHeading/>
+    <article>
+        <!-- 文章内容 -->
+        <ContentRoot/>
+    </article>
+</main>
+
+<aside class="toc">
+    <h3>目录</h3>
+    <ul id="toc-list">
+        <!-- JavaScript会自动生成目录 -->
+    </ul>
+</aside>
+<script>
+    // 自动扫描文章headings，生成目录
+    document.addEventListener('DOMContentLoaded', function() {
+        const headings = document.querySelectorAll('.content h2, .content h3, .content h4');
+        const tocList = document.getElementById('toc-list');
+
+        // 存储标题元素和对应的目录项
+        const headingElements = [];
+        const tocItems = [];
+
+        let currentH2Item = null;
+        let currentH3Item = null;
+
+        // 生成目录
+        headings.forEach((heading, index) => {
+            const id = heading.textContent.toLowerCase().replace(/\s+/g, '-');
+            heading.id = id;
+
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = `#${id}`;
+            a.textContent = heading.textContent;
+            li.appendChild(a);
+
+            if (heading.tagName === 'H2') {
+                // 一级标题
+                tocList.appendChild(li);
+                currentH2Item = li;
+                currentH3Item = null;
+
+                // 为h2创建子ul
+                const subUl = document.createElement('ul');
+                li.appendChild(subUl);
+                currentH2Item.subUl = subUl;
+            }
+            else if (heading.tagName === 'H3') {
+                // 二级标题
+                if (currentH2Item && currentH2Item.subUl) {
+                    currentH2Item.subUl.appendChild(li);
+                } else {
+                    tocList.appendChild(li);
+                }
+                currentH3Item = li;
+
+                // 为h3创建子ul
+                const subUl = document.createElement('ul');
+                li.appendChild(subUl);
+                currentH3Item.subUl = subUl;
+            }
+            else if (heading.tagName === 'H4') {
+                // 三级标题
+                if (currentH3Item && currentH3Item.subUl) {
+                    currentH3Item.subUl.appendChild(li);
+                } else if (currentH2Item && currentH2Item.subUl) {
+                    currentH2Item.subUl.appendChild(li);
+                } else {
+                    tocList.appendChild(li);
+                }
+            }
+
+            // 保存标题和对应的目录项
+            headingElements.push(heading);
+            tocItems.push(li);
+
+            // 为目录项添加点击事件，平滑滚动
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                heading.scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // 更新URL哈希，但不触发滚动
+                history.pushState(null, null, `#${id}`);
+            });
+        });
+
+        // 使用IntersectionObserver监测哪个标题在视口中
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // 找到当前可见的标题对应的索引
+                    const index = headingElements.indexOf(entry.target);
+                    if (index !== -1) {
+                        // 移除所有高亮
+                        tocItems.forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        // 高亮当前目录项
+                        tocItems[index].classList.add('active');
+
+                        // 如果当前目录项在嵌套的ul中，确保父级ul可见
+                        let parent = tocItems[index].parentElement;
+                        while (parent && parent !== tocList) {
+                            if (parent.tagName === 'UL') {
+                                parent.style.display = 'block';
+                            }
+                            parent = parent.parentElement;
+                        }
+                    }
+                }
+            });
+        }, {
+            rootMargin: '-50% 0px -50% 0px', // 调整触发区域为中心附近
+            threshold: 0
+        });
+
+        // 观察所有标题
+        headingElements.forEach(heading => {
+            observer.observe(heading);
+        });
+
+        // 初始时检查是否有哈希，并滚动到对应位置
+        if (window.location.hash) {
+            const target = document.querySelector(window.location.hash);
+            if (target) {
+                setTimeout(() => {
+                    target.scrollIntoView();
+                }, 100);
+            }
+        }
+    });
+</script>
 </body>
 </html>
