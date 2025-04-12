@@ -1,5 +1,7 @@
-use crate::POSTS_TEMPLATE;
 use std::fs;
+
+// 博客模板文件
+static POSTS_TEMPLATE: &str = include_str!("templates/posts_template.html");
 
 /*
  * 初始化项目，创建博客项目的默认文件
