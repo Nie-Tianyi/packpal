@@ -9,7 +9,7 @@ static POSTS_TEMPLATE: &str = include_str!("templates/posts_template.html");
  * 根目录
  * ├── posts/                       (Markdown源文件存放的地方)
  * │   ├── metadata.json            (存放文章的元数据)
- * │   └── 我的第一篇博客.md          (示例博客文章)
+ * │   └── 我的第一篇博客.md           (示例博客文章)
  * ├── templates/                   (模板HTML存放地方)
  * │   ├── posts_template.html      (文章模板文件)
  * │   └── index_template.html      (主页模板文件)
