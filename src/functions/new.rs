@@ -2,6 +2,7 @@ use std::fs;
 
 // 博客模板文件
 static POSTS_TEMPLATE: &str = include_str!("../templates/posts_template.html");
+static METADATA_TEMPLATE: &str = include_str!("../templates/metadata_template.html");
 static README: &str = include_str!("../../README.md");
 
 /*
@@ -10,7 +11,7 @@ static README: &str = include_str!("../../README.md");
  * 根目录
  * ├── posts/                       (Markdown源文件存放的地方)
  * │   ├── metadata.json            (存放文章的元数据)
- * │   └── 我的第一篇博客.md           (示例博客文章)
+ * │   └── 我的第一篇博客.md          (示例博客文章)
  * ├── templates/                   (模板HTML存放地方)
  * │   ├── posts_template.html      (文章模板文件)
  * │   └── index_template.html      (主页模板文件)
@@ -41,7 +42,7 @@ pub fn new_project(name: String) {
     fs::write(&index_template_path, "<h1>主页模板</h1>").expect("创建index_template.html文件失败");
     // 创建metadata.json文件
     let metadata_path = format!("{}/metadata.json", posts_dir);
-    fs::write(&metadata_path, "[]").expect("创建metadata.json文件失败");
+    fs::write(&metadata_path, METADATA_TEMPLATE).expect("创建metadata.json文件失败");
     // 创建我的第一篇博客.md文件
     let post_path = format!("{}/我的第一篇博客.md", posts_dir);
     fs::write(&post_path, "# 我的第一篇博客\n这是我的第一篇博客").expect("创建我的第一篇博客.md文件失败");
