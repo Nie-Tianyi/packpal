@@ -17,7 +17,6 @@ static POSTS_TEMPLATE: &str = include_str!("templates/posts_template.html");
  * └── README.md                    (PackPal使用指南)
  */
 pub fn new_project(name: String) {
-
     println!("Creating project {}", name);
 
     create_new_dir(name.clone(), "build");

@@ -1,10 +1,9 @@
+use pulldown_cmark::{Options, html};
 use std::fs;
-use pulldown_cmark::{html, Options};
 
 pub fn build() {
     unimplemented!()
 }
-
 
 // fn hydrate_post(md_path: String) {
 //     let markdown = fs::read_to_string(POSTS_FOLDER.to_owned() + "比特币.md")?;

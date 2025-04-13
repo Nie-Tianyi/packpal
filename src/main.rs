@@ -2,9 +2,9 @@ use clap::{Parser as ClapParser, Subcommand};
 use std::error::Error;
 
 mod func_build;
-mod func_new;
-mod func_deploy;
 mod func_clean;
+mod func_deploy;
+mod func_new;
 #[derive(ClapParser)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
