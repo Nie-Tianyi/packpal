@@ -17,5 +17,5 @@ fn hydrate_post(md_path: String) {
         .replace("<PostHeading/>", &*format!("<h1>{}</h1>", "比特币"))
         .replace("<ContentRoot/>", &*content);
 
-    fs::write("BUILD_FOLDER".to_owned() + "比特币.html", res)?;
+    fs::write("BUILD_FOLDER".to_owned() + "比特币.html", res).unwrap();
 }
