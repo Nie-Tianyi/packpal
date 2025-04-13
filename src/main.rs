@@ -1,10 +1,8 @@
 use clap::{Parser as ClapParser, Subcommand};
 use std::error::Error;
 
-mod func_build;
-mod func_clean;
-mod func_deploy;
-mod func_new;
+mod functions;
+mod plugins;
 #[derive(ClapParser)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
@@ -30,7 +28,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::New { project_name } => func_new::new_project(project_name),
+        Commands::New { project_name } => functions::new::new_project(project_name),
         Commands::Build { .. } => {}
         Commands::Deploy => {}
         Commands::Update => {}
