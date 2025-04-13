@@ -10,7 +10,7 @@ static README: &str = include_str!("../../README.md");
  * 创建出来目录结构如下
  * 根目录
  * ├── posts/                       (Markdown源文件存放的地方)
- * │   ├── metadata.json            (存放文章的元数据)
+ * │   ├── metadata.json            (存放文章的元数据，如标题、日期等，还在这里配置博客的基本信息)
  * │   └── 我的第一篇博客.md          (示例博客文章)
  * ├── templates/                   (模板HTML存放地方)
  * │   ├── posts_template.html      (文章模板文件)
