@@ -12,7 +12,7 @@ fn hydrate_post(md_path: String) {
     let mut content = String::new();
     html::push_html(&mut content, parser);
 
-    let template = fs::read_to_string("./templates/".to_owned() + "posts_template.html")?;
+    let template = fs::read_to_string("./templates/".to_owned() + "posts_template.html").unwrap();
     let res = template
         .replace("<PostHeading/>", &*format!("<h1>{}</h1>", "比特币"))
         .replace("<ContentRoot/>", &*content);
