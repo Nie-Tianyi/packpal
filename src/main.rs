@@ -1,6 +1,11 @@
 use clap::{Parser as ClapParser, Subcommand};
 use std::error::Error;
 
+/*
+ * PackPal
+ * 一个简单的静态博客生成器，使用Rust编写
+ */
+
 mod functions;
 mod plugins;
 #[derive(ClapParser)]

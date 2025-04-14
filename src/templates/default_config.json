@@ -1,0 +1,13 @@
+{
+  "username": "PackPal",
+  "avatar": "./avatar.jpg",
+  "contact": {
+    "github": "",
+    "phone": "",
+    "email": ""
+  },
+  "templates_dir": "./templates/",
+  "posts_dir": "./posts/",
+  "build_dir": "./build/",
+  "plugins": []
+}
