@@ -1,4 +1,4 @@
-use pulldown_cmark::{Options, html, Parser};
+use pulldown_cmark::{Options, Parser, html};
 use std::fs;
 
 pub fn build() {

@@ -1,4 +1,3 @@
-use std::fmt::format;
 use std::fs;
 
 // 博客模板文件
