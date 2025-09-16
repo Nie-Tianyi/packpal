@@ -1,18 +1,9 @@
-{
-  "contacts": {
-    "name": "your blog's name",
-    "avatar": "path/to/avatar.jpg",
-    "email": "your email address",
-    "github": "your github URL",
-    "phone": "your phone number"
-  },
-  "posts": [
-    {
-      "title": "post title",
-      "description": "post description",
-      "date": "post date",
-      "keywords": "post keywords",
-      "author": "post author"
-    }
-  ]
-}
+[
+  {
+    "title": "post title",
+    "description": "post description",
+    "date": "post date",
+    "keywords": "post keywords",
+    "author": "post author"
+  }
+]

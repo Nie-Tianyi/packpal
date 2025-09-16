@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Title</title>
+    <title>阅读《置身事内》：理解中国经济的底层逻辑 | 极简日志</title>
+    <!-- 引入Font Awesome（图标支持） -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script defer>
         MathJax = {
             tex: {
@@ -17,438 +19,617 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
     <style>
-        /* 整个版面style */
+        /* 基础重置与全局样式 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
         }
 
         body {
-            display: grid;
-            grid-template-columns: 200px 1fr 250px;
-            min-height: 100vh;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #fafafa;
+            color: #2D3748;
+            line-height: 1.7;
+            padding: 0;
+            margin: 0;
         }
 
-        /* 左侧导航栏样式 */
-        .nav-left {
-            background: #333;
-            color: white;
-            padding: 20px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 15px 0;
             position: sticky;
             top: 0;
-            height: 100vh;
+            z-index: 100;
+        }
+
+        .navbar-content {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-bottom: 20px;
+        .blog-logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2D3748;
+            text-decoration: none;
         }
 
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .back-home {
+            display: flex;
+            align-items: center;
+            color: #4A5568;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
         }
 
-        .nav-left ul {
-            list-style: none;
-            width: 100%;
+        .back-home:hover {
+            color: #2D3748;
         }
 
-        .nav-left li {
-            padding: 10px;
-            cursor: pointer;
-            transition: background 0.3s;
-            border-radius: 5px;
-            text-align: center;
+        .back-home i {
+            margin-right: 8px;
         }
 
-        .nav-left li:hover {
-            background: #444;
+        /* 文章头部信息（标题、元数据） */
+        .post-header {
+            margin: 40px 0 30px;
+            text-align: left;
         }
 
-        /* 内容区域样式 */
-        .content {
-            padding: 40px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* 右侧目录样式 */
-        .toc {
-            position: sticky;
-            top: 20px;
-            height: fit-content;
-            padding: 20px;
-            background: #f5f5f5;
-            border-radius: 8px;
-            margin: 20px 20px 0 0;
-        }
-
-        .toc h3 {
+        .post-meta {
+            display: flex;
+            align-items: center;
+            color: #718096;
+            font-size: 0.9rem;
             margin-bottom: 15px;
-            color: #333;
         }
 
-        .toc ul {
+        .post-meta span {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .post-meta i {
+            margin-right: 6px;
+        }
+
+        .post-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2D3748;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .post-cover {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 主体内容：目录 + 正文 布局 */
+        .post-content-wrapper {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        /* 目录样式 */
+        .toc-container {
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 90px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .toc-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .toc-list {
             list-style: none;
         }
 
-        .toc li {
+        .toc-item {
             margin-bottom: 8px;
-            padding-left: 10px;
-            border-left: 2px solid #ddd;
         }
 
-        .toc a {
+        .toc-link {
+            display: block;
+            padding: 6px 8px;
+            color: #4A5568;
             text-decoration: none;
-            color: #666;
-            font-size: 0.9em;
-            transition: color 0.3s;
-        }
-
-        .toc a:hover {
-            color: #333;
-        }
-
-        /* 高亮当前浏览的章节 */
-        .toc li.active {
-            background-color: #e0e0e0;
-        }
-
-        .toc li.active > a {
-            color: #000;
-            font-weight: bold;
-        }
-
-        .toc li.active {
-            border-left-color: #666;
-        }
-    </style>
-    <style>
-        /* 文章内容的style */
-        .content {
-            line-height: 1.6;
-            color: #333;
-            font-size: 16px;
-        }
-
-        .content h1 {
-            font-size: 2.2em;
-            margin: 1.5em 0 0.8em;
-            padding-bottom: 0.3em;
-            border-bottom: 1px solid #eaecef;
-            font-weight: 600;
-        }
-
-        .content h2 {
-            font-size: 1.8em;
-            margin: 1.3em 0 0.7em;
-            padding-bottom: 0.2em;
-            border-bottom: 1px solid #eaecef;
-            font-weight: 600;
-        }
-
-        .content h3 {
-            font-size: 1.5em;
-            margin: 1.2em 0 0.6em;
-            font-weight: 600;
-        }
-
-        .content h4 {
-            font-size: 1.3em;
-            margin: 1em 0 0.5em;
-            font-weight: 600;
-        }
-
-        .content p {
-            margin: 0.8em 0;
-        }
-
-        .content a {
-            color: #0366d6;
-            text-decoration: none;
-        }
-
-        .content a:hover {
-            text-decoration: underline;
-        }
-
-        .content ul, .content ol {
-            margin: 0.8em 0;
-            padding-left: 2em;
-        }
-
-        .content li {
-            margin: 0.4em 0;
-        }
-
-        .content blockquote {
-            margin: 1em 0;
-            padding: 0 1em;
-            color: #6a737d;
-            border-left: 0.25em solid #dfe2e5;
-        }
-
-        /* 代码样式 */
-        .content pre {
-            background-color: #f6f8fa;
             border-radius: 6px;
-            padding: 16px;
-            overflow: auto;
-            margin: 1em 0;
-            line-height: 1.45;
+            transition: all 0.3s ease;
         }
 
-        .content code {
-            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-            background-color: rgba(27, 31, 35, 0.05);
-            border-radius: 3px;
-            padding: 0.2em 0.4em;
-            font-size: 85%;
+        /* 目录层级缩进 - 支持H1到H6 */
+        .toc-level-1 { /* H1 对应目录项 */
+            padding-left: 0;
+            font-size: 1rem;
+            font-weight: 500;
         }
 
-        .content pre code {
-            background-color: transparent;
-            padding: 0;
-            border-radius: 0;
+        .toc-level-2 { /* H2 对应目录项 */
+            padding-left: 0;
+            font-size: 0.95rem;
         }
 
-        /* 表格样式 */
-        .content table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 1em 0;
-            display: block;
-            overflow: auto;
+        .toc-level-3 { /* H3 对应目录项 */
+            padding-left: 15px;
+            font-size: 0.9rem;
         }
 
-        .content table th {
+        .toc-level-4 { /* H4 对应目录项 */
+            padding-left: 30px;
+            font-size: 0.85rem;
+        }
+
+        .toc-level-5 { /* H5 对应目录项 */
+            padding-left: 45px;
+            font-size: 0.8rem;
+        }
+
+        .toc-level-6 { /* H6 对应目录项 */
+            padding-left: 60px;
+            font-size: 0.75rem;
+        }
+
+        /* 目录当前项高亮 */
+        .toc-link.active {
+            background-color: #f1f5f9;
+            color: #2D3748;
+            font-weight: 500;
+        }
+
+        .toc-link:hover {
+            background-color: #f8fafc;
+            color: #2D3748;
+        }
+
+        /* 正文样式 */
+        .post-main {
+            flex-grow: 1;
+            max-width: 700px;
+        }
+
+        .post-paragraph {
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+            color: #334155;
+        }
+
+        /* 文章内标题样式 - 支持H1到H6 */
+        .post-h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 50px 0 25px;
+            color: #2D3748;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .post-h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 40px 0 20px;
+            color: #2D3748;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .post-h3 {
+            font-size: 1.25rem;
             font-weight: 600;
-            background-color: #f6f8fa;
+            margin: 30px 0 15px;
+            color: #2D3748;
         }
 
-        .content table th,
-        .content table td {
-            padding: 6px 13px;
-            border: 1px solid #dfe2e5;
+        .post-h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 25px 0 12px;
+            color: #2D3748;
         }
 
-        .content table tr {
-            background-color: #fff;
-            border-top: 1px solid #c6cbd1;
+        .post-h5 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin: 20px 0 10px;
+            color: #2D3748;
         }
 
-        .content table tr:nth-child(2n) {
-            background-color: #f6f8fa;
+        .post-h6 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 15px 0 8px;
+            color: #4A5568;
         }
 
-        /* 图片样式 */
-        .content img {
-            max-width: 100%;
-            display: block;
-            margin: 1.5em auto;
-            box-sizing: content-box;
-            background-color: #fff;
+        /* 正文内图片 */
+        .post-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 30px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
-        /* 数学公式样式 */
-        .content .math {
-            color: #333;
+        /* 引用样式 */
+        .post-quote {
+            border-left: 4px solid #4A5568;
+            padding: 15px 20px;
+            margin: 30px 0;
+            background-color: #f8fafc;
+            border-radius: 0 6px 6px 0;
+            color: #4A5568;
+            font-style: italic;
         }
 
-        /* 特殊文本样式 */
-        .content .highlight {
-            background-color: #fff8c5;
-            padding: 0.2em;
-            border-radius: 3px;
+        /* 列表样式 */
+        .post-list {
+            margin: 20px 0 20px 20px;
+            color: #334155;
         }
 
-        /* 分隔线 */
-        .content hr {
-            height: 0.25em;
-            padding: 0;
-            margin: 1.5em 0;
-            background-color: #e1e4e8;
-            border: 0;
+        .post-list li {
+            margin-bottom: 10px;
         }
 
-        /* 响应式调整 */
-        @media (max-width: 768px) {
-            .content {
-                font-size: 15px;
-                padding: 20px;
+        /* 底部导航（上一篇/下一篇） */
+        .post-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 60px 0;
+            padding: 20px 0;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .post-nav-item {
+            flex: 1;
+            text-decoration: none;
+            color: #2D3748;
+            transition: color 0.3s ease;
+        }
+
+        .post-nav-item:hover {
+            color: #4A5568;
+        }
+
+        .post-nav-prev {
+            text-align: left;
+        }
+
+        .post-nav-next {
+            text-align: right;
+        }
+
+        .post-nav-label {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+
+        /* 页脚 */
+        footer {
+            margin: 40px 0 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        /* 响应式适配（移动端） */
+        @media (max-width: 992px) {
+            .post-content-wrapper {
+                flex-direction: column;
+                gap: 20px;
             }
 
-            .content h1 {
-                font-size: 1.8em;
+            .toc-container {
+                width: 100%;
+                position: static;
+                max-height: none;
+                overflow-y: visible;
+                margin-bottom: 30px;
             }
 
-            .content h2 {
-                font-size: 1.5em;
+            .post-main {
+                max-width: 100%;
             }
 
-            .content h3 {
-                font-size: 1.3em;
+            .post-cover {
+                height: 250px;
             }
+
+            .post-title {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .post-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .post-meta span {
+                margin-right: 0;
+            }
+
+            .post-nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .post-nav-prev, .post-nav-next {
+                text-align: left;
+            }
+        }
+
+        /* 目录滚动条美化 */
+        .toc-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .toc-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .toc-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .toc-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
 <body>
-<nav class="nav-left">
-    <div class="avatar">
-        <img src="path/to/your/avatar.jpg" alt="Avatar">
+<!-- 顶部导航栏 -->
+<nav class="navbar">
+    <div class="container navbar-content">
+        <a href="index.html" class="blog-logo">极简日志</a>
+        <a href="index.html" class="back-home">
+            <i class="fa fa-arrow-left"></i>
+            返回首页
+        </a>
     </div>
-    <ul>
-        <li>HOME</li>
-        <li>ABOUT</li>
-        <li>CONTACT</li>
-    </ul>
 </nav>
 
-<main class="content">
-    <!-- 文章标题 -->
-    <PostHeading/>
-    <article>
-        <!-- 文章内容 -->
-        <ContentRoot/>
-    </article>
-</main>
+<div class="container">
+    <!-- 文章头部信息 -->
+    <header class="post-header">
+        <div class="post-meta">
+            <span><i class="fa fa-calendar-o"></i> 2024.05.20</span>
+            <span><i class="fa fa-clock-o"></i> 阅读时长：12分钟</span>
+            <span><i class="fa fa-tag"></i> 经济 · 读书</span>
+        </div>
+        <h1 class="post-title">阅读《置身事内》：理解中国经济的底层逻辑</h1>
+        <img src="https://picsum.photos/id/180/1200/400" alt="《置身事内》书籍封面" class="post-cover">
+    </header>
 
-<aside class="toc">
-    <h3>目录</h3>
-    <ul id="toc-list">
-        <!-- JavaScript会自动生成目录 -->
-    </ul>
-</aside>
+    <!-- 主体内容：目录 + 正文 -->
+    <div class="post-content-wrapper">
+        <!-- 自动生成的目录（初始为空，由JS填充） -->
+        <aside class="toc-container">
+            <h3 class="toc-title">文章目录</h3>
+            <ul class="toc-list" id="tocList"></ul>
+        </aside>
+
+        <!-- 文章正文 -->
+        <main class="post-main" id="postMain">
+            <p class="post-paragraph">
+                经济学往往被复杂的理论模型和专业术语包裹，让普通读者望而却步。但兰小欢教授的《置身事内》却打破了这种壁垒——它没有堆砌公式，而是用通俗的语言、真实的案例，拆解了中国经济发展的核心脉络。读完这本书，我最大的收获不是记住了某个经济概念，而是理解了"中国经济不是孤立的理论，而是无数人、无数政策共同参与的现实"——我们既是经济的观察者，也是置身其中的参与者。
+            </p>
+
+            <h1 class="post-h1" id="book-introduction">关于《置身事内》</h1>
+            <p class="post-paragraph">
+                《置身事内》是复旦大学经济学院副教授兰小欢的著作，旨在向普通读者解释中国经济的运行逻辑。本书以地方政府的视角为切入点，深入剖析了中国经济发展的微观机制和宏观现象。
+            </p>
+
+            <h2 class="post-h2" id="why-this-book">一、为什么推荐这本书？</h2>
+            <p class="post-paragraph">
+                在此之前，我读过多本经济类书籍，但大多停留在"解释现象"的层面：比如"为什么房价会涨""为什么要扶持中小企业"。这些书能帮我理解"是什么"，却回答不了"为什么会这样""政策背后的逻辑是什么"。
+            </p>
+
+            <h3 class="post-h3" id="unique-perspective">1. 独特的观察视角</h3>
+            <p class="post-paragraph">
+                与其他经济学书籍不同，《置身事内》从政府与市场的互动关系出发，提供了一个理解中国经济的全新视角。
+            </p>
+
+            <h4 class="post-h4" id="government-role">1.1 政府角色的重新认识</h4>
+            <p class="post-paragraph">
+                书中对政府在经济发展中的角色进行了重新诠释，打破了我们对政府与市场关系的传统认知。
+            </p>
+
+            <h5 class="post-h5" id="dual-identity">1.1.1 政府的双重身份</h5>
+            <p class="post-paragraph">
+                政府既是规则制定者，又是市场参与者，这种双重身份在中国经济发展中起到了独特作用。
+            </p>
+
+            <h6 class="post-h6" id="policy-maker">1.1.1.1 政策制定者角色</h6>
+            <p class="post-paragraph">
+                作为政策制定者，政府制定市场规则，维护市场秩序，为经济发展提供稳定的制度环境。
+            </p>
+
+            <h6 class="post-h6" id="market-participant">1.1.1.2 市场参与者角色</h6>
+            <p class="post-paragraph">
+                作为市场参与者，政府通过投资、引导等方式直接参与经济活动，推动特定产业发展。
+            </p>
+
+            <h2 class="post-h2" id="core-insights">二、书中的核心洞察</h2>
+            <p class="post-paragraph">
+                全书分为"微观机制"和"宏观现象"两部分，前者讲地方政府如何运作，后者讲经济增长、房价、贸易等现实问题。
+            </p>
+
+            <h3 class="post-h3" id="local-government-role">1. 地方政府是"经济参与者"</h3>
+            <p class="post-paragraph">
+                我们通常认为"政府管监管，市场管经营"，但在书中，地方政府更像一个"公司"：它要"赚钱"（通过土地财政、税收），要"投资"（建设基础设施、扶持企业），还要"竞争"（和其他城市抢项目、抢人才）。
+            </p>
+
+            <h3 class="post-h3" id="land-finance">2. 土地财政的历史作用</h3>
+            <p class="post-paragraph">
+                提到"土地财政"，很多人会联想到"高房价""地方债务"。但书中指出，土地财政的出现，有其历史必然性。
+            </p>
+
+            <h2 class="post-h2" id="my-thoughts">三、对普通人的启示</h2>
+            <p class="post-paragraph">
+                读完《置身事内》，我不仅理解了经济运行的逻辑，更学会了用"更务实的视角"看待身边的问题。
+            </p>
+
+            <h2 class="post-h2" id="conclusion">四、总结</h2>
+            <p class="post-paragraph">
+                《置身事内》不是一本"教你赚钱"的书，也不是一本"批判现实"的书，而是一本"理解中国"的书。它让我明白，中国经济的发展不是偶然，也不是简单的"复制西方模式"，而是无数政策制定者、企业家、普通人在现实约束下共同探索的结果。
+            </p>
+        </main>
+    </div>
+
+    <!-- 底部导航（上一篇/下一篇） -->
+    <div class="post-nav">
+        <a href="#" class="post-nav-item post-nav-prev">
+            <div class="post-nav-label">上一篇</div>
+            <div class="post-nav-title">极简生活实践30天：我学会了"给生活做减法"</div>
+        </a>
+        <a href="#" class="post-nav-item post-nav-next">
+            <div class="post-nav-label">下一篇</div>
+            <div class="post-nav-title">职场笔记：如何用"目标拆解法"应对复杂工作</div>
+        </a>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>&copy; 2024 极简日志 | Minimal Log. 保留所有权利。</p>
+    </footer>
+</div>
+
+<!-- 核心功能：自动生成目录 + 锚点跳转 + 当前标题高亮 -->
 <script>
-    // 自动扫描文章headings，生成目录
-    document.addEventListener('DOMContentLoaded', function() {
-        const headings = document.querySelectorAll('.content h2, .content h3, .content h4');
-        const tocList = document.getElementById('toc-list');
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', function () {
+        // 1. 获取文章内所有标题（H1到H6）
+        const postMain = document.getElementById('postMain');
+        const headings = postMain.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        const tocList = document.getElementById('tocList');
 
-        // 存储标题元素和对应的目录项
-        const headingElements = [];
-        const tocItems = [];
-
-        let currentH2Item = null;
-        let currentH3Item = null;
-
-        // 生成目录
-        headings.forEach((heading, index) => {
-            const id = heading.textContent.toLowerCase().replace(/\s+/g, '-');
-            heading.id = id;
-
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = `#${id}`;
-            a.textContent = heading.textContent;
-            li.appendChild(a);
-
-            if (heading.tagName === 'H2') {
-                // 一级标题
-                tocList.appendChild(li);
-                currentH2Item = li;
-                currentH3Item = null;
-
-                // 为h2创建子ul
-                const subUl = document.createElement('ul');
-                li.appendChild(subUl);
-                currentH2Item.subUl = subUl;
-            }
-            else if (heading.tagName === 'H3') {
-                // 二级标题
-                if (currentH2Item && currentH2Item.subUl) {
-                    currentH2Item.subUl.appendChild(li);
-                } else {
-                    tocList.appendChild(li);
+        // 2. 生成目录（如果有标题）
+        if (headings.length > 0) {
+            headings.forEach(heading => {
+                // 给标题添加唯一ID（如果没有ID）
+                if (!heading.id) {
+                    // 用标题文本生成ID（替换空格为-，转小写）
+                    const headingText = heading.textContent.trim().replace(/\s+/g, '-').toLowerCase();
+                    heading.id = headingText;
                 }
-                currentH3Item = li;
 
-                // 为h3创建子ul
-                const subUl = document.createElement('ul');
-                li.appendChild(subUl);
-                currentH3Item.subUl = subUl;
-            }
-            else if (heading.tagName === 'H4') {
-                // 三级标题
-                if (currentH3Item && currentH3Item.subUl) {
-                    currentH3Item.subUl.appendChild(li);
-                } else if (currentH2Item && currentH2Item.subUl) {
-                    currentH2Item.subUl.appendChild(li);
-                } else {
-                    tocList.appendChild(li);
+                // 创建目录项（li）和链接（a）
+                const tocItem = document.createElement('li');
+                const tocLink = document.createElement('a');
+
+                // 设置链接属性
+                tocLink.href = `#${heading.id}`;
+                tocLink.textContent = heading.textContent;
+                tocLink.classList.add('toc-link');
+
+                // 根据标题层级添加对应类（控制缩进和字体大小）
+                if (heading.tagName === 'H1') {
+                    tocLink.classList.add('toc-level-1');
+                } else if (heading.tagName === 'H2') {
+                    tocLink.classList.add('toc-level-2');
+                } else if (heading.tagName === 'H3') {
+                    tocLink.classList.add('toc-level-3');
+                } else if (heading.tagName === 'H4') {
+                    tocLink.classList.add('toc-level-4');
+                } else if (heading.tagName === 'H5') {
+                    tocLink.classList.add('toc-level-5');
+                } else if (heading.tagName === 'H6') {
+                    tocLink.classList.add('toc-level-6');
                 }
-            }
 
-            // 保存标题和对应的目录项
-            headingElements.push(heading);
-            tocItems.push(li);
+                // 组装目录项并添加到目录列表
+                tocItem.appendChild(tocLink);
+                tocList.appendChild(tocItem);
 
-            // 为目录项添加点击事件，平滑滚动
-            a.addEventListener('click', (e) => {
-                e.preventDefault();
-                heading.scrollIntoView({
-                    behavior: 'smooth'
+                // 3. 锚点跳转平滑滚动
+                tocLink.addEventListener('click', function (e) {
+                    e.preventDefault(); // 阻止默认跳转
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetHeading = document.getElementById(targetId);
+
+                    // 平滑滚动到标题（距离顶部100px，避免被导航栏遮挡）
+                    window.scrollTo({
+                        top: targetHeading.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
                 });
-                // 更新URL哈希，但不触发滚动
-                history.pushState(null, null, `#${id}`);
             });
-        });
 
-        // 使用IntersectionObserver监测哪个标题在视口中
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // 找到当前可见的标题对应的索引
-                    const index = headingElements.indexOf(entry.target);
-                    if (index !== -1) {
+            // 4. 监听滚动，高亮当前阅读的标题
+            window.addEventListener('scroll', function () {
+                // 获取当前滚动位置（加150px，提前高亮）
+                const scrollPosition = window.scrollY + 150;
+
+                // 遍历标题，判断当前滚动位置对应的标题
+                headings.forEach(heading => {
+                    const headingTop = heading.offsetTop;
+                    const headingBottom = headingTop + heading.offsetHeight;
+                    const tocLink = document.querySelector(`.toc-link[href="#${heading.id}"]`);
+
+                    // 如果当前滚动位置在标题范围内，高亮目录项
+                    if (scrollPosition >= headingTop && scrollPosition < headingBottom) {
                         // 移除所有高亮
-                        tocItems.forEach(item => {
-                            item.classList.remove('active');
+                        document.querySelectorAll('.toc-link').forEach(link => {
+                            link.classList.remove('active');
                         });
-                        // 高亮当前目录项
-                        tocItems[index].classList.add('active');
-
-                        // 如果当前目录项在嵌套的ul中，确保父级ul可见
-                        let parent = tocItems[index].parentElement;
-                        while (parent && parent !== tocList) {
-                            if (parent.tagName === 'UL') {
-                                parent.style.display = 'block';
-                            }
-                            parent = parent.parentElement;
-                        }
+                        // 给当前标题的目录项添加高亮
+                        if (tocLink) tocLink.classList.add('active');
                     }
-                }
+                });
             });
-        }, {
-            rootMargin: '-50% 0px -50% 0px', // 调整触发区域为中心附近
-            threshold: 0
-        });
 
-        // 观察所有标题
-        headingElements.forEach(heading => {
-            observer.observe(heading);
-        });
-
-        // 初始时检查是否有哈希，并滚动到对应位置
-        if (window.location.hash) {
-            const target = document.querySelector(window.location.hash);
-            if (target) {
-                setTimeout(() => {
-                    target.scrollIntoView();
-                }, 100);
-            }
+            // 初始触发一次滚动事件，确保页面加载时目录高亮正确
+            window.dispatchEvent(new Event('scroll'));
+        } else {
+            // 如果没有标题，显示"暂无目录"
+            const noTocItem = document.createElement('li');
+            noTocItem.textContent = '暂无目录';
+            noTocItem.style.color = '#718096';
+            noTocItem.style.padding = '6px 8px';
+            tocList.appendChild(noTocItem);
         }
     });
 </script>
 </body>
 </html>
+

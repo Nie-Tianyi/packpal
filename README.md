@@ -9,33 +9,35 @@
 `packpal new [project name]`：在当前文件夹下生成一个新的项目文件，默认的项目文件包括：
 
 ```txt
-根目录(你的项目名字)
-├── posts/                  	(Markdown源文件存放的地方)
-│   ├── metadata.json         	(存放文章的元数据，如标题、日期等，还在这里配置博客的基本信息)
-│   └── 我的第一篇博客.md        	(示例博客文章)
-├── templates/               	(模板HTML存放地方)
-│   ├── posts_template.html  	(文章模板文件)
-│   └── index_template.html   	(主页模板文件)
-├── build/                    	(用来存放打包合成后的文件)
-├── config.json					(默认的配置文件)
-└── README.md                 	(PackPal使用指南)
+初始化项目，创建博客项目的默认文件
+创建出来目录结构如下
+根目录
+├── posts/                       (Markdown源文件存放的地方)
+│   ├── metadata.json            (存放文章的元数据，如标题、日期等)
+│   └── 我的第一篇博客.md           (示例博客文章)
+├── templates/                   (模板HTML存放地方)
+│   ├── posts_template.html      (文章模板文件)
+│   └── index_template.html      (主页模板文件)
+├── build/                       (用来存放打包合成后的文件)
+├── avatar.png                   (博客头像)
+├── config.json                  (站点元数据)
+└── README.md                    (PackPal使用指南)
+
 ```
 
 配置文件`config.json`内包含站点的配置文件，当第一次使用packpal的时候，用户需要配置这个文件，控制站点生成的内容。`config.json`默认配置内容如下：
 
 ```json
 {
-  "username": "PackPal",
-  "avatar": "./avatar.jpg",
-  "contact": {
+  "site_name": "My Blogs",
+  "avatar": "./avatar.png",
+  "contacts":{
     "github": "",
+    "wechat": "",
     "phone": "",
+    "qq": "",
     "email": ""
-  },
-  "templates_dir": "./templates/",
-  "posts_dir": "./posts/",
-  "build_dir": "./build/",
-  "plugins": []
+  }
 }
 ```
 
