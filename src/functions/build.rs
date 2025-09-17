@@ -1,9 +1,25 @@
-use pulldown_cmark::{Options, Parser, html};
+use pulldown_cmark::{html, Options, Parser};
 use std::fs;
 use std::path::Path;
 
-pub fn build() {
+pub enum SourceType {
+    Markdown,
+}
+
+pub struct PostSource<PATH: AsRef<Path>> {
+    name: String,            // 文件名，也是博客的标题
+    source_type: SourceType, // 文件类型，现在只支持 markdown 文件
+    path: PATH,              // 文件路径（相对路径）
+}
+
+pub fn build(source_dir: impl ToString) {
     unimplemented!()
+}
+
+fn scan_folder(dir: impl AsRef<Path>) {
+    for entry in fs::read_dir(dir) {
+        unimplemented!()
+    }
 }
 
 fn hydrate_post(
