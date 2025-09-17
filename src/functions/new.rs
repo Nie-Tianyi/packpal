@@ -1,4 +1,5 @@
 use std::fs;
+use std::path::Path;
 
 // 博客模板文件
 static POSTS_TEMPLATE: &str = include_str!("../templates/posts_template.html");
@@ -23,9 +24,9 @@ static CONFIG_TEMPLATE: &str = include_str!("../templates/config.json");
  * ├── config.json                  (站点元数据)
  * └── README.md                    (PackPal使用指南)
  */
-pub fn new_project(name: String) {
+pub fn new_project(name: impl ToString) {
     // 创建项目目录
-    let project_dir = format!("{}/", name);
+    let project_dir = format!("{}/", name.to_string());
     fs::create_dir_all(&project_dir).expect("创建项目目录失败");
     // 创建posts目录
     let posts_dir = format!("{}/posts", project_dir);
@@ -67,7 +68,7 @@ mod tests {
 
     #[test]
     fn test_new_project() {
-        new_project("test/test_project".to_string());
+        new_project("test/test_project");
         assert!(fs::metadata("test/test_project").is_ok());
         assert!(fs::metadata("test/test_project/posts").is_ok());
     }
