@@ -1,5 +1,4 @@
 use std::fs;
-use std::path::Path;
 
 // 博客模板文件
 static POSTS_TEMPLATE: &str = include_str!("../templates/posts_template.html");
@@ -27,39 +26,39 @@ static CONFIG_TEMPLATE: &str = include_str!("../templates/config.json");
 pub fn new_project(name: impl ToString) {
     // 创建项目目录
     let project_dir = format!("{}/", name.to_string());
-    fs::create_dir_all(&project_dir).expect("创建项目目录失败");
+    fs::create_dir_all(&project_dir).expect("[错误]创建项目目录失败");
     // 创建posts目录
     let posts_dir = format!("{}/posts", project_dir);
-    fs::create_dir_all(&posts_dir).expect("创建posts目录失败");
+    fs::create_dir_all(&posts_dir).expect("[错误]创建posts目录失败");
     // 创建templates目录
     let templates_dir = format!("{}/templates", project_dir);
-    fs::create_dir_all(&templates_dir).expect("创建templates目录失败");
+    fs::create_dir_all(&templates_dir).expect("[错误]创建templates目录失败");
     // 创建build目录
     let build_dir = format!("{}/build", project_dir);
-    fs::create_dir_all(&build_dir).expect("创建build目录失败");
+    fs::create_dir_all(&build_dir).expect("[错误]创建build目录失败");
     // 创建README.md文件
     let readme_path = format!("{}/README.md", project_dir);
-    fs::write(&readme_path, README).expect("创建README.md文件失败");
+    fs::write(&readme_path, README).expect("[错误]创建README.md文件失败");
     // 创建avatar.png
     let avatar_path = format!("{}/avatar.png", project_dir);
-    fs::write(&avatar_path, AVATAR).expect("创建avatar.png文件失败");
+    fs::write(&avatar_path, AVATAR).expect("[错误]创建avatar.png文件失败");
     // 创建config.json
     let config_path = format!("{}/config.json", project_dir);
-    fs::write(&config_path, CONFIG_TEMPLATE).expect("创建config.json失败");
+    fs::write(&config_path, CONFIG_TEMPLATE).expect("[错误]创建config.json失败");
     // 创建posts_template.html文件
     let posts_template_path = format!("{}/posts_template.html", templates_dir);
-    fs::write(&posts_template_path, POSTS_TEMPLATE).expect("创建posts_template.html文件失败");
+    fs::write(&posts_template_path, POSTS_TEMPLATE).expect("[错误]创建posts_template.html文件失败");
     // 创建index_template.html文件
     let index_template_path = format!("{}/index_template.html", templates_dir);
-    fs::write(&index_template_path, INDEX_TEMPLATE).expect("创建index_template.html文件失败");
+    fs::write(&index_template_path, INDEX_TEMPLATE).expect("[错误]创建index_template.html文件失败");
     // 创建metadata.json文件
     let metadata_path = format!("{}/metadata.json", posts_dir);
-    fs::write(&metadata_path, METADATA_TEMPLATE).expect("创建metadata.json文件失败");
+    fs::write(&metadata_path, METADATA_TEMPLATE).expect("[错误]创建metadata.json文件失败");
     // 创建我的第一篇博客.md文件
     let post_path = format!("{}/我的第一篇博客.md", posts_dir);
     fs::write(&post_path, "# 我的第一篇博客\n这是我的第一篇博客")
-        .expect("创建我的第一篇博客.md文件失败");
-    println!("项目初始化完成！");
+        .expect("[错误]创建我的第一篇博客.md文件失败");
+    println!("[信息]项目{project_dir}初始化完成！");
 }
 
 #[cfg(test)]

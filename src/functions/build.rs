@@ -1,47 +1,67 @@
-use pulldown_cmark::{html, Options, Parser};
 use std::fs;
 use std::path::Path;
 
-pub enum SourceType {
-    Markdown,
-}
+mod posts;
 
-pub struct PostSource<PATH: AsRef<Path>> {
-    name: String,            // 文件名，也是博客的标题
-    source_type: SourceType, // 文件类型，现在只支持 markdown 文件
-    path: PATH,              // 文件路径（相对路径）
-}
+use crate::functions::build::posts::{PostTemplate, RawPost, SourceType};
 
-pub fn build(source_dir: impl ToString) {
-    unimplemented!()
-}
+static DEFAULT_PUBLIC_PATH: &str = "public/";
 
-fn scan_folder(dir: impl AsRef<Path>) {
-    for entry in fs::read_dir(dir) {
-        unimplemented!()
+static DEFAULT_ARTICLES_PATH: &str = "articles/";
+
+/// 扫秒指定文件夹source_dir下的源文件（e.g. markdown文件），生成静态站点文件到dist_dir内
+pub fn build(
+    source_dir: impl AsRef<Path>,
+    template_dir: impl AsRef<Path>,
+    dist_dir: impl AsRef<Path>,
+) {
+    let dist_dir = dist_dir.as_ref().display();
+    let template_dir = template_dir.as_ref().display();
+
+    // 扫描所有博客源文件，例如markdown文件
+    let sources = scan_source_file(source_dir);
+    let post_template = PostTemplate::from_path(format!("{template_dir}posts_template.html"));
+
+    // 在dist_dir下面生成 articles 和 public 文件夹
+    let dist_public_dir = format!("{dist_dir}{DEFAULT_PUBLIC_PATH}");
+    let dist_articles_dir = format!("{dist_dir}{DEFAULT_ARTICLES_PATH}");
+    fs::create_dir_all(&dist_public_dir).expect("[错误]生成public文件夹失败");
+    fs::create_dir_all(&dist_articles_dir).expect("[错误]生成articles文件夹失败");
+    // 生成博客文件
+    for source in sources {
+        let post = source.hydrate(&post_template);
+        post.write_into_folder(&dist_articles_dir)
     }
 }
 
-fn hydrate_post(
-    md_path: impl AsRef<Path>,
-    template_path: impl AsRef<Path>,
-    output_path: impl AsRef<Path>,
-) {
-    let markdown = fs::read_to_string(md_path).unwrap();
-    let parser = Parser::new_ext(&*markdown, Options::all());
+// 扫描posts文件夹下所有markdown文件，并返回其元数据
+fn scan_source_file(dir: impl AsRef<Path>) -> Vec<RawPost> {
+    let mut posts = Vec::new();
+    for entry in fs::read_dir(&dir)
+        .unwrap_or_else(|_| panic!("[错误]读取目录{}失败", dir.as_ref().display()))
+        .flatten()
+    {
+        let name = entry
+            .file_name()
+            .into_string()
+            .expect("[错误]读取文件名时遇到无效UTF-8字符");
+        let name = name.split('.').collect::<Vec<&str>>()[0];
+        let name = name.to_string();
 
-    let mut content = String::new();
-    html::push_html(&mut content, parser);
+        let path = entry.path();
 
-    let template = fs::read_to_string(template_path).unwrap();
-    let res = template
-        .replace(
-            "<PostHeading/>",
-            &*format!("<h1 class=\"post-title\">{}</h1>", "比特币"),
-        )
-        .replace("<ContentRoot/>", &*content);
+        let source_type = match path
+            .extension()
+            .map(|s| s.to_str().expect("[错误]读取文件名扩展时遇到无效UTF-8字符"))
+        {
+            Some("md") => SourceType::Markdown,
+            _ => continue,
+        };
 
-    fs::write(output_path, res).unwrap();
+        posts.push(RawPost::new(name, source_type, path))
+    }
+
+    posts
 }
 
 #[cfg(test)]
@@ -59,12 +79,19 @@ mod tests {
     }
 
     #[test]
-    fn test_hydration() {
-        let test_project_root = new_test_project("test_hydration");
-        hydrate_post(
-            format!("{test_project_root}/posts/比特币.md"),
-            format!("{test_project_root}/templates/posts_template.html"),
-            format!("{test_project_root}/build/比特币.html"),
-        )
+    fn test_scan_folder() {
+        let test_prj_root = new_test_project("test_scan_folder");
+        let posts = scan_source_file(format!("{test_prj_root}/posts/"));
+        println!("{:?}", posts);
+    }
+
+    #[test]
+    fn test_build() {
+        let test_prj_root = new_test_project("test_build");
+        build(
+            format!("{test_prj_root}/posts/"),
+            format!("{test_prj_root}/templates/"),
+            format!("{test_prj_root}/build/"),
+        );
     }
 }
