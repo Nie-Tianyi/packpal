@@ -1,13 +1,73 @@
+use crate::functions::build::index::IndexTemplate;
+use std::error::Error;
 use std::fs;
 use std::path::Path;
 
+mod index;
 mod posts;
 
-use crate::functions::build::posts::{PostTemplate, RawPost, SourceType};
+use crate::functions::build::posts::{PostMetadataList, PostTemplate, RawPost, SourceType};
 
-static DEFAULT_PUBLIC_PATH: &str = "public/";
+#[derive(Clone)]
+pub struct SiteFactory {
+    blog_name: String,
+    avatar: Avatar,
+    email: String,
+    github: String,
+    posts: Vec<RawPost>,
+    metadata: PostMetadataList,
+    post_template: PostTemplate,
+    index_template: IndexTemplate,
+}
 
-static DEFAULT_ARTICLES_PATH: &str = "articles/";
+#[derive(Clone)]
+pub struct Avatar {
+    data: Box<[u8]>,
+    url: String,
+}
+
+impl SiteFactory {
+    pub fn new(
+        blog_name: String,
+        avatar: Avatar,
+        email: String,
+        github: String,
+        posts: Vec<RawPost>,
+        metadata: PostMetadataList,
+        post_template: PostTemplate,
+        index_template: IndexTemplate,
+    ) -> Self {
+        SiteFactory {
+            blog_name,
+            avatar,
+            email,
+            github,
+            posts,
+            metadata,
+            post_template,
+            index_template,
+        }
+    }
+
+    pub fn build(self, out_dir: impl AsRef<Path>) {
+        let out_dir = out_dir.as_ref().display();
+        // 在dist_dir下面生成 articles 和 public 文件夹
+        let dist_public_dir = format!("{out_dir}public/");
+        let dist_articles_dir = format!("{out_dir}articles/");
+        fs::create_dir_all(&dist_public_dir).expect("[错误]构建时创建文件夹失败");
+        fs::create_dir_all(&dist_articles_dir).expect("[错误]构建时创建文件夹失败");
+
+        let metadata_list = PostMetadataList::from_json("posts.json");
+        for mut post in self.posts {
+            if let Some(metadata) = self.metadata.get(&post.name) {
+                post.set_date(metadata.date.clone());
+                post.set_tag(metadata.tags.clone());
+            }
+            let target = post.hydrate(&self.post_template);
+            target.write_into_folder(&dist_articles_dir);
+        }
+    }
+}
 
 /// 扫秒指定文件夹source_dir下的源文件（e.g. markdown文件），生成静态站点文件到dist_dir内
 pub fn build(
@@ -15,23 +75,7 @@ pub fn build(
     template_dir: impl AsRef<Path>,
     dist_dir: impl AsRef<Path>,
 ) {
-    let dist_dir = dist_dir.as_ref().display();
-    let template_dir = template_dir.as_ref().display();
-
-    // 扫描所有博客源文件，例如markdown文件
-    let sources = scan_source_file(source_dir);
-    let post_template = PostTemplate::from_path(format!("{template_dir}posts_template.html"));
-
-    // 在dist_dir下面生成 articles 和 public 文件夹
-    let dist_public_dir = format!("{dist_dir}{DEFAULT_PUBLIC_PATH}");
-    let dist_articles_dir = format!("{dist_dir}{DEFAULT_ARTICLES_PATH}");
-    fs::create_dir_all(&dist_public_dir).expect("[错误]生成public文件夹失败");
-    fs::create_dir_all(&dist_articles_dir).expect("[错误]生成articles文件夹失败");
-    // 生成博客文件
-    for source in sources {
-        let post = source.hydrate(&post_template);
-        post.write_into_folder(&dist_articles_dir)
-    }
+    unimplemented!()
 }
 
 // 扫描posts文件夹下所有markdown文件，并返回其元数据

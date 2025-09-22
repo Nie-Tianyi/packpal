@@ -1,9 +1,9 @@
-[
-  {
-    "title": "post title",
-    "description": "post description",
-    "date": "post date",
-    "keywords": "post keywords",
-    "author": "post author"
+{
+  "我的第一篇博客": {
+    "create_at": "2024.09.07",
+    "hashtags": [
+      "博客",
+      "站点"
+    ]
   }
-]
+}
