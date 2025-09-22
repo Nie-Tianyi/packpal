@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+use crate::functions::build::index::{IndexInfo, PostInfo};
+use crate::functions::build::posts;
 
 #[derive(Clone, Debug, Default)]
 pub enum SourceType {
@@ -90,7 +92,9 @@ impl RawPost {
         }
     }
 
-    pub fn hydrate(mut self, template: &PostTemplate) -> HTMLPost {
+
+
+    pub fn render(mut self, template: &PostTemplate) -> (PostInfo, HTMLPost) {
         if self.content.is_none() {
             self.load_content_from_path()
         }
@@ -105,20 +109,27 @@ impl RawPost {
             .0
             .replace(
                 "<PostDate/>",
-                &self.date.take().unwrap_or("----.--.--".to_string()),
+                &self.date.clone().unwrap_or("----.--.--".to_string()),
             )
             .replace(
                 "<ReadingTime/>",
-                &self.reading_time.take().unwrap_or("<1分钟".to_string()),
+                &self.reading_time.clone().unwrap_or("<1分钟".to_string()),
             )
             .replace("<PostTags/>", &self.get_tags())
             .replace(
                 "<PostHeading/>",
-                &format!("<h1 class=\"post-title\">{}</h1>", self.name),
+                &format!("<h1 class=\"post-title\">{}</h1>", self.name.clone()),
             )
             .replace("<ContentRoot/>", &content);
 
-        HTMLPost::new(self.name, post_content)
+        let post_info = PostInfo {
+            title: self.name.clone(),
+            date: self.date.take().unwrap_or("----.--.--".to_string()),
+            url: format!("articles/{}", self.name),
+            excerpt: self.content.clone().unwrap_or("".to_string()).drain(..100).collect(),
+        };
+
+        (post_info, HTMLPost::new(self.name, post_content))
     }
 
     fn load_content_from_path(&mut self) {
@@ -172,7 +183,7 @@ fn is_chinese_character(c: char) -> bool {
 pub struct PostTemplate(String);
 
 impl PostTemplate {
-    pub fn from_path(path: impl AsRef<Path>) -> Self {
+    pub fn imports(path: impl AsRef<Path>) -> Self {
         let template =
             fs::read_to_string(path).unwrap_or_else(|_| panic!("[错误]找不到posts_template.html"));
         PostTemplate(template)

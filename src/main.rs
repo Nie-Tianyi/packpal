@@ -1,6 +1,6 @@
 use clap::{Parser as ClapParser, Subcommand};
 use std::error::Error;
-
+use crate::functions::build::build;
 /*
  * PackPal
  * 一个简单的静态博客生成器，使用Rust编写
@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     match cli.command {
         Commands::New { project_name } => functions::new::new_project(project_name),
-        Commands::Build { .. } => {}
+        Commands::Build { .. } => {build("./posts/", "./templates/", "./build/")}
         Commands::Deploy => {}
         Commands::Update => {}
         Commands::Clean => {}
